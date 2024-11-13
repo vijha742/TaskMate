@@ -12,8 +12,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.Duration;
+import java.sql.*;
 /**
  *
  * @author vikas
@@ -31,9 +33,6 @@ public class DBManager {
                 System.out.println("The driver name is " + meta.getDriverName());
             }
             System.out.println("Connection to SQLite has been established.");
-            var stmt = conn.createStatement();
-            var sql = "SELECT COUNT(Id) FROM test;";
-            var rs = stmt.executeQuery(sql);
 //            conn.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -62,38 +61,99 @@ public class DBManager {
         }
     }
 
-    public void RENAMETABLE(String oldname, String newname) {
-        var sql = "ALTER TABLE ? RENAME TO ?;";
-        try {
-            var stmt = conn.prepareStatement(sql);
-            stmt.setString(1,oldname);
-            stmt.setString(2,newname);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    public void DELETETABLE(String name) {
-        var sql = "DROP TABLE IF EXISTS ?;";
-        try {
-            var stmt = conn.prepareStatement(sql);
-            stmt.setString(1,name);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 //    INSERT INTO " + "test" + " (Id,Task,Description,Status,Created,Due) VALUES(1,?,?,?,CURRENT_TIMESTAMP,?);
 //  what if some field doesn't exist?
     //  can be implemented when the databse structure is changed to have the first table name of all databses
-    public void EDIT(int id,String Task,String Description, String Status, String Duedate) {
-        var update = "UPDATE test SET Status = \"Done\" WHERE Task = \"?\" ;";
-        try(var pstmt = conn.prepareStatement(update)) {
-            pstmt.setString(1,Task);
+
+    public void EDIT(int Id, String Description, String Status, String Duedate) {
+        if(!Description.isEmpty() && !Status.isEmpty() && !Duedate.isEmpty()) {
+        String update = "UPDATE test SET Description = ?, Status = ?, Duedate = ? WHERE Id = ?;";
+        try (var pstmt = conn.prepareStatement(update)) {
+            pstmt.setString(1, Description);
+            pstmt.setString(2, Status);
+            pstmt.setString(3, Duedate);
+            pstmt.setInt(4, Id); 
             pstmt.executeUpdate();
+            System.out.println("Task Modified Successfully");
         } catch (SQLException e) {
-            System.out.println("Couldn't mark task as done");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        } else if(!Description.isEmpty() && !Status.isEmpty() && Duedate.isEmpty()) {
+
+        String update = "UPDATE test SET Description = ?, Status = ? WHERE Id = ?;";
+        try (var pstmt = conn.prepareStatement(update)) {
+            pstmt.setString(1, Description);
+            pstmt.setString(2, Status);
+            pstmt.setInt(3, Id); 
+            pstmt.executeUpdate();
+            System.out.println("Task Modified Successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        } else if(!Description.isEmpty() && Status.isEmpty() && !Duedate.isEmpty()) {
+
+        String update = "UPDATE test SET Description = ?, Duedate = ? WHERE Id = ?;";
+        try (var pstmt = conn.prepareStatement(update)) {
+            pstmt.setString(1, Description);
+            pstmt.setString(2, Duedate);
+            pstmt.setInt(3, Id); 
+            pstmt.executeUpdate();
+            System.out.println("Task Modified Successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        } else if(Description.isEmpty() && !Status.isEmpty() && !Duedate.isEmpty()) {
+
+        String update = "UPDATE test SET Status = ?, Duedate = ? WHERE Id = ?;";
+        try (var pstmt = conn.prepareStatement(update)) {
+            pstmt.setString(1, Status);
+            pstmt.setString(2, Duedate);
+            pstmt.setInt(3, Id); 
+            pstmt.executeUpdate();
+            System.out.println("Task Modified Successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        } else if(Description.isEmpty() && Status.isEmpty() && !Duedate.isEmpty()) {
+
+        String update = "UPDATE test Duedate = ? WHERE Id = ?;";
+        try (var pstmt = conn.prepareStatement(update)) {
+            pstmt.setString(1, Duedate);
+            pstmt.setInt(2, Id); 
+            pstmt.executeUpdate();
+            System.out.println("Task Modified Successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        }else if(Description.isEmpty() && !Status.isEmpty() && Duedate.isEmpty() ) {
+        String update = "UPDATE test SET Status = ? WHERE Id = ?;";
+        try (var pstmt = conn.prepareStatement(update)) {
+            pstmt.setString(1, Status);
+            pstmt.setInt(2, Id); 
+            pstmt.executeUpdate();
+            System.out.println("Task Modified Successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        } else if(!Description.isEmpty() && Status.isEmpty() && Duedate.isEmpty()) {
+        String update = "UPDATE test SET Description = ? WHERE Id = ?;";
+        try (var pstmt = conn.prepareStatement(update)) {
+            pstmt.setString(1, Description);
+            pstmt.setInt(2, Id); 
+            pstmt.executeUpdate();
+            System.out.println("Task Modified Successfully");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
         }
     }
 
@@ -143,12 +203,45 @@ public class DBManager {
         }
     }
 
+    public void INSERTTASK(String task,String status,String due) {
+        var sql = "INSERT INTO test" + " (Task,Status,CreatedAt,DueDate) VALUES(?,?,CURRENT_TIMESTAMP,?);";
+        try (var pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,task);
+            pstmt.setString(2,status);
+            pstmt.setString(3,due);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void INSERTTASK(String task,String due) {
+        var sql = "INSERT INTO test" + " (Task,CreatedAt,DueDate) VALUES(?,CURRENT_TIMESTAMP,?);";
+        try (var pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,task);
+            pstmt.setString(2,due);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void INSERTTASK(String task) {
+        var sql = "INSERT INTO test" + " (Task,CreatedAt) VALUES(?,CURRENT_TIMESTAMP);";
+        try (var pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,task);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void DISPLAY() {
         var sql = "SELECT * FROM test;"; // to fetch all the tsak in the selected table
         try ( var pstmt = conn.prepareStatement(sql)) {
         var res = pstmt.executeQuery();
         while(res.next()){
-            System.out.printf("%d\t%s\t%s\t%s\t%d\t%s\n",res.getInt("Id"),res.getString("Task"),res.getString("Description"),res.getString("Status"),res.getInt("CreatedAt"),res.getString("DueDate"));
+            System.out.printf("%d\t%s\t%s\t%s\t%s\t%s\n",res.getInt("Id"),res.getString("Task"),res.getString("Description"),res.getString("Status"),res.getString("CreatedAt"),res.getString("DueDate"));
         }
         } catch (SQLException ex) {
         System.out.println(ex.getMessage());
@@ -178,7 +271,7 @@ public class DBManager {
     }
     
     public void DELETETask(String task) {
-        var del = "DELETE FROM tset WHERE Task = ?;";
+        var del = "DELETE FROM test WHERE Task = ?;";
         try {
             var stmt = conn.prepareStatement(del);
             stmt.setString(1,task);
@@ -225,7 +318,110 @@ public class DBManager {
             System.out.println(e.getMessage());
         }
     }
-    
+
+    public void searchInDates(String start, String end) {
+        try {
+            var query = "SELECT * FROM test WHERE DueDate > ? and DueDate < ?;";
+            var pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, start);
+            pstmt.setString(2, end);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                System.out.printf("%d\t%s\t%s\t%s\t%d\t%s\n",
+                    rs.getInt("Id"),
+                    rs.getString("Task"),
+                    rs.getString("Description"),
+                    rs.getString("Status"),
+                    rs.getInt("CreatedAt"),
+                    rs.getString("DueDate"));
+            } 
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+    }
+
+    public void searchInToday() {
+        try {
+            String query = "SELECT * FROM test WHERE DueDate = ?;";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, LocalDate.now().toString());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                System.out.printf("%d\t%s\t%s\t%s\t%d\t%s\n",
+                    rs.getInt("Id"),
+                    rs.getString("Task"),
+                    rs.getString("Description"),
+                    rs.getString("Status"),
+                    rs.getInt("CreatedAt"),
+                    rs.getString("DueDate"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void searchInTomm() {
+    try {
+        String query = "SELECT * FROM test WHERE DueDate = ?;";
+        PreparedStatement pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, LocalDate.now().plusDays(1).toString()); // Set date to tomorrow
+        ResultSet rs = pstmt.executeQuery();
+        
+        while (rs.next()) {
+            System.out.printf("%d\t%s\t%s\t%s\t%d\t%s\n",
+                rs.getInt("Id"),
+                rs.getString("Task"),
+                rs.getString("Description"),
+                rs.getString("Status"),
+                rs.getInt("CreatedAt"),
+                rs.getString("DueDate"));
+        }
+    } catch (SQLException e) {
+        System.out.println("Error retrieving tasks due tomorrow: " + e.getMessage());
+    }
+}
+
+    public void searchInWeek() {
+        try {
+            var query = "SELECT * FROM test WHERE DueDate > ? AND DueDate < ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1,LocalDate.now().toString());
+            pstmt.setString(2,LocalDate.now().plusDays(7).toString());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                System.out.printf("%d\t%s\t%s\t%s\t%d\t%s\n",
+                    rs.getInt("Id"),
+                    rs.getString("Task"),
+                    rs.getString("Description"),
+                    rs.getString("Status"),
+                    rs.getInt("CreatedAt"),
+                    rs.getString("DueDate"));
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void searchInMonth() {
+        try {
+            var query = "SELECT * FROM test WHERE strftime('%Y', DueDate) = ? AND strftime('%m', DueDate) = ?;";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1,String.valueOf(LocalDate.now().getYear()));
+            pstmt.setString(2,String.format("%02d",LocalDate.now().getMonthValue()));
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                System.out.printf("%d\t%s\t%s\t%s\t%d\t%s\n",
+                    rs.getInt("Id"),
+                    rs.getString("Task"),
+                    rs.getString("Description"),
+                    rs.getString("Status"),
+                    rs.getInt("CreatedAt"),
+                    rs.getString("DueDate"));
+            }
+        } catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
     public void SORTDue() {
     String sql = "SELECT * FROM test WHERE Status <> 'Done' ORDER BY DueDate DESC;";
 

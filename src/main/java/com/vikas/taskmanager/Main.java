@@ -5,11 +5,13 @@
  */
 package com.vikas.taskmanager;
 
+import java.time.Year;
 import java.util.List;
 import java.util.Scanner;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.completer.StringsCompleter;
+import java.time.Year;
 
 
 /**
@@ -31,8 +33,8 @@ public class Main {
         while(choice != 9) {
             choice = Integer.valueOf(scan.nextLine());
             switch(choice) {
-//              What if user wants to enter only sleective fields????
-//              Create user data file or class to store id count.
+//              What if user wants to enter only sleective fields???? (Done)
+//              Create user data file or class to store id count.(Done)
                 case 1:
                     System.out.println("Enter Task name:");
                     String Task = scan.nextLine();
@@ -42,7 +44,25 @@ public class Main {
                     String Status = scan.nextLine();
                     System.out.println("Enter due date & time (YYYY-MM-DD HH:MM:SS)");
                     String Due = scan.nextLine();
-                    database.INSERTTASK(Task,Description,Status,Due);
+                    /* String[] dateSet = Due.split("-");
+                   while (Integer.valueOf(dateSet[1]) >12 || Integer.valueOf(dateSet[1]) < 1 || Integer.valueOf(dateSet[2]) > 31 || Integer.valueOf(dateSet[2]) < 1 || Integer.valueOf(dateSet[0]) < Year.now().getValue()) {
+                        System.out.println("Invalid Date...\nEnter Again");
+                        Due = scan.nextLine();
+                        dateSet = Due.split("-");
+                    }*/
+                    if(!Task.isEmpty() && !Description.isEmpty() && !Status.isEmpty() && !Due.isEmpty()) {
+                        database.INSERTTASK(Task,Description,Status,Due);
+                    System.out.println("Successfully saved the Task");
+                    } else if(!Task.isEmpty() && !Status.isEmpty() && !Due.isEmpty() && Description.isEmpty()) {
+                    database.INSERTTASK(Task,Status,Due);
+                    System.out.println("Successfully saved the Task");
+                    } else if(!Task.isEmpty() && !Due.isEmpty() && Description.isEmpty() && Status.isEmpty()) {
+                    database.INSERTTASK(Task,Due);
+                    System.out.println("Successfully saved the Task");
+                    } else if(!Task.isEmpty() && Due.isEmpty() && Status.isEmpty() && Description.isEmpty()) {
+                    database.INSERTTASK(Task);
+                    System.out.println("Successfully saved the Task");
+                    }
                     columnValues = database.fetchTask();
                 break; 
 //              what if user has only one project? Why'd he need to tell the project name?
@@ -56,6 +76,7 @@ public class Main {
                     String MAD = reader.readLine("Enter task to mark as done (TAB to autocomplete): ");
                     String edited = MAD.trim();
                     database.MarkasDone(edited);
+                    System.out.println("Task Status changed to Done");
                 break;
                 case 4:
                     // CREATE DELETE TASK FUNCTION;
@@ -63,21 +84,22 @@ public class Main {
                     String delkey = scan.nextLine();
                     if(isInteger(delkey)) {
                         database.DELETETask(Integer.parseInt(delkey));
+                        System.out.println("Task deleted Successfully");
                     } else {
                         database.DELETETask(delkey);
+                        System.out.println("Task deleted successfully");
                     }
                 break;
                 case 5:
                     System.out.println("Enter Task Id to update");
                     int Id = Integer.valueOf(scan.nextLine());
-                    System.out.println("Enter updated Task(Enter to skip):");
-                    String updatedTask = scan.nextLine(); 
                     System.out.println("Enter updated Description(Enter to skip:)");
                     String updatedDescription = scan.nextLine();
                     System.out.println("Enter updated Status(Enter to skip:)");
                     String updatedStatus = scan.nextLine();
                     System.out.println("Enter updated Due Date(Enter to skip:)");
                     String updatedDuedate = scan.nextLine();
+                    database.EDIT(Id,updatedDescription,updatedStatus,updatedDuedate);
                 break;
                 case 6:
                     System.out.println("What task (Name/Id) do you want to search for");
@@ -99,6 +121,26 @@ public class Main {
                 case 9:
                     database.disconnect();
                 break;    
+                case 10:
+                    System.out.println("Due tasks you wanna search for");
+                    System.out.println("1 For today\n2 For Tommorrow\n3 For past tasks\n4 For tasks this week\n5 For tasks this month");
+                    int input = Integer.valueOf(scan.nextLine());
+                    if(input ==1) {
+                        database.searchInToday();    
+                    } else if(input ==2) {
+                        database.searchInTomm();
+                } else if(input == 3) {
+                    System.out.println("From: ");
+                    String from = scan.nextLine();
+                    System.out.println("To: ");
+                    String to = scan.nextLine();
+                    database.searchInDates(from,to);
+                } else if(input == 4) {
+                    database.searchInWeek();
+                } else if(input == 5) {
+                    database.searchInMonth();
+                }
+                    break;
                 default:
                     System.out.println("Enter valid Input...");
                 break;
