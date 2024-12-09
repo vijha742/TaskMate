@@ -4,7 +4,8 @@ Display tasks:		2
 Mark as Done:		3
 Delete Task:		4
 Edit Task:		5
-Filter Task:		6
+Specific Task:		6
 Search for Tags:	7
 Sort Task:		8
-Exit:			9
+Filter Task		9
+Exit:			10

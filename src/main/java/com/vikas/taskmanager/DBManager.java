@@ -25,7 +25,7 @@ public class DBManager {
     public DBManager() {
         // entering a db that doen't existy will crteate that db
 //      give user way to create new db without altering code...
-        String url = "jdbc:sqlite:/home/vikas/sqlite3/VikasJha.db";
+        String url = "jdbc:sqlite:VikasJha.db";
         try {
             conn = DriverManager.getConnection(url);
             if (conn != null) {
@@ -295,15 +295,16 @@ public class DBManager {
     }
     
     public void SEARCH(String task) {
-        var search = "SELECT * FROM test WHERE Task = ?;";
+        var search = "SELECT * FROM test WHERE Task LIKE ?;";
+        String userInput = "%" + task + "%";
         try(var pstmt = conn.prepareStatement(search)) {
-            pstmt.setString(1,task);
+            pstmt.setString(1,userInput);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 System.out.printf("%d\t%s\t%s\t%s\t%s\n",rs.getInt("Id"),rs.getString("Task"),rs.getString("Description"),rs.getString("Status"),rs.getInt("CreatedAt"),rs.getString("DueDate")); // Fetch values from the column
             }
         } catch (SQLException e) {
-            System.out.println("Couldn't complete search");
+            System.out.println(e.getMessage());
         }
     }
     

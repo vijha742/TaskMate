@@ -30,7 +30,8 @@ public class Main {
         LineReader reader = LineReaderBuilder.builder().completer(completer).build();
         System.out.print("\033[H\033[2J");
         System.out.flush();
-        while(choice != 9) {
+        System.out.println("Enter commands here!");
+        while(choice != 10) {
             choice = Integer.valueOf(scan.nextLine());
             switch(choice) {
 //              What if user wants to enter only sleective fields???? (Done)
@@ -63,6 +64,13 @@ public class Main {
                     database.INSERTTASK(Task);
                     System.out.println("Successfully saved the Task");
                     }
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException e) {
+                        System.err.println("Sleep interrupted: " + e.getMessage());
+                    }
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
                     columnValues = database.fetchTask();
                 break; 
 //              what if user has only one project? Why'd he need to tell the project name?
@@ -70,6 +78,15 @@ public class Main {
 //              What if user wants only specific task
                 case 2:
                     database.DISPLAY();
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException e) {
+                        System.err.println("Sleep interrupted: " + e.getMessage());
+                    }
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
                 break;
 //                  Add autocomplete feature
                 case 3:
@@ -77,6 +94,15 @@ public class Main {
                     String edited = MAD.trim();
                     database.MarkasDone(edited);
                     System.out.println("Task Status changed to Done");
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException e) {
+                        System.err.println("Sleep interrupted: " + e.getMessage());
+                    }
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
                 break;
                 case 4:
                     // CREATE DELETE TASK FUNCTION;
@@ -89,6 +115,13 @@ public class Main {
                         database.DELETETask(delkey);
                         System.out.println("Task deleted successfully");
                     }
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException e) {
+                        System.err.println("Sleep interrupted: " + e.getMessage());
+                    }
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
                 break;
                 case 5:
                     System.out.println("Enter Task Id to update");
@@ -100,6 +133,13 @@ public class Main {
                     System.out.println("Enter updated Due Date(Enter to skip:)");
                     String updatedDuedate = scan.nextLine();
                     database.EDIT(Id,updatedDescription,updatedStatus,updatedDuedate);
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException e) {
+                        System.err.println("Sleep interrupted: " + e.getMessage());
+                    }
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
                 break;
                 case 6:
                     System.out.println("What task (Name/Id) do you want to search for");
@@ -109,6 +149,13 @@ public class Main {
                     } else {
                         database.SEARCH(task);
                     }
+                    try {
+                        Thread.sleep(3000);
+                    } catch(InterruptedException e) {
+                        System.err.println("Sleep interrupted: " + e.getMessage());
+                    }
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
                 break;
                 case 7:
                     System.out.println("What tags do you want to search for?");
@@ -118,10 +165,10 @@ public class Main {
                 case 8:
                     database.SORTDue();
                 break;
-                case 9:
+                case 10:
                     database.disconnect();
                 break;    
-                case 10:
+                case 9:
                     System.out.println("Due tasks you wanna search for");
                     System.out.println("1 For today\n2 For Tommorrow\n3 For past tasks\n4 For tasks this week\n5 For tasks this month");
                     int input = Integer.valueOf(scan.nextLine());
@@ -140,6 +187,13 @@ public class Main {
                 } else if(input == 5) {
                     database.searchInMonth();
                 }
+                    try {
+                        Thread.sleep(5000);
+                    } catch(InterruptedException e) {
+                        System.err.println("Sleep interrupted: " + e.getMessage());
+                    }
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
                     break;
                 default:
                     System.out.println("Enter valid Input...");
