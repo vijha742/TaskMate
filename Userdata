@@ -1,7 +1,39 @@
-User.name : Vikas Jha
-User.email : jhavikas2004@gmail.com
-Total tasks created : 
-Total tasks done :
-Total tasks pending :
-Tasks working on :
-Projects working on : 
+#!/bin/bash
+
+# ANSI color codes
+RESET="\033[0m"
+BOLD="\033[1m"
+BLUE="\033[34m"
+CYAN="\033[36m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RED="\033[31m"
+
+# Path to your SQLite database
+DB_PATH="VikasJha.db"
+
+# Fetch data from the database
+total_tasks_created=$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM test;")
+total_tasks_done=$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM test WHERE status = 'done';")
+total_tasks_pending=$(sqlite3 "$DB_PATH" "SELECT COUNT(*) FROM test WHERE status = 'pending';")
+tasks_working_on=$(sqlite3 "$DB_PATH" "SELECT Task FROM test WHERE status = 'in progress';" | tr '\n' ', ' | sed 's/, $//')
+projects_working_on=$(sqlite3 "$DB_PATH" "SELECT DISTINCT Task FROM test WHERE Description LIKE '%#project%';" | tr '\n' ', ' | sed 's/, $//')
+
+# Format the output
+echo -e "${BOLD}${BLUE}User.name${RESET} : ${GREEN}ABC${RESET}"
+echo -e "${BOLD}${BLUE}User.email${RESET} : ${GREEN}xyz@gmail.com${RESET}"
+echo -e "${BOLD}${CYAN}Total tasks created${RESET} : ${YELLOW}$total_tasks_created${RESET}"
+echo -e "${BOLD}${CYAN}Total tasks done${RESET} : ${YELLOW}$total_tasks_done${RESET}"
+echo -e "${BOLD}${CYAN}Total tasks pending${RESET} : ${YELLOW}$total_tasks_pending${RESET}"
+
+if [[ -n "$tasks_working_on" ]]; then
+  echo -e "${BOLD}${CYAN}Tasks working on${RESET} : ${GREEN}$tasks_working_on${RESET}"
+else
+  echo -e "${BOLD}${CYAN}Tasks working on${RESET} : ${RED}None${RESET}"
+fi
+
+if [[ -n "$projects_working_on" ]]; then
+  echo -e "${BOLD}${CYAN}Projects working on${RESET} : ${GREEN}$projects_working_on${RESET}"
+else
+  echo -e "${BOLD}${CYAN}Projects working on${RESET} : ${RED}None${RESET}"
+fi

@@ -4,10 +4,10 @@ tmux split-window -v;
 tmux split-window -h;
 sleep 0.1;
 tmux send-keys \"sqlite3 VikasJha.db\" Enter;
-tmux send-keys \".mode column\" C-m;
+tmux send-keys \".mode box\" C-m;
 tmux send-keys \".headers on\" C-m;
-tmux send-keys \".width auto auto 25 auto auto auto\" C-m;
-tmux send-keys \"SELECT * FROM test\;\" Enter;
+tmux send-keys \".width auto auto\" C-m;
+tmux send-keys \"SELECT Id,Task FROM test\;\" Enter;
 tmux select-pane -t 1;
 tmux split-window -v;
 tmux select-pane -t 1;
@@ -23,7 +23,7 @@ tmux send-keys -t1 \"clear\" Enter;
 tmux send-keys -t1 \"cat ~/TaskMate/Commands.md\" Enter;
 tmux send-keys -t2 \"export PS1=''\" Enter;
 tmux send-keys -t2 \"clear\" Enter;
-tmux send-keys -t2 \"cat ~/TaskMate/Userdata\" Enter;
+tmux send-keys -t2 \"~/TaskMate/./Userdata\" Enter;
 tmux attach -t TaskMate"
 
 # Now resize after attaching

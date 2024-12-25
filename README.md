@@ -86,23 +86,50 @@ To use the TUI, run the Bash startup script:
 ### 5. Task Categorization
 ---
 
+## Functions in Use
+Create Table
+Rename Table
+Delete Table
+Edit Task
+rename Project
+delete project
+Filter Task
+Insert Task - 4 methods
+Display all Task 
+Mark task as done
+Delete task via Task
+Delete task via Id
+Search Id
+Search Task
+SearchTag
+searchInDates
+searchInToday
+searchInWeek
+searchInMonth
+SortDue
+disconnect
+---
+
 ## Future Enhancements
 - **User Authentication**: Add multi-user support with login functionality.
 - **Recurring Tasks**: Allow users to add recurring tasks.
 - **File Handling**: Add functionality for attaching files or documents to tasks.
 - **Notifications**: Implement reminder notifications for upcoming or overdue tasks.
+- **Project Sharing**: Implement functionality to share a common project and all the tasks attached with it.
+- **User Dashboard**: Add a stastical view in User Dashboard
+- **Task Add-ons**: Implement feature to include sub-tasks and file attachments in description
+- **Multi-line Editor**: Add feature for multi-line description editor.
+- **Edit Buffer**: Implement feature so that any editing doesn't require complete rewriting of that field.
+- **Filter**: Improve the task filtering logic currently available.
+
+*And if I sometime decide to learn Go then:*
+- Implement using Charm
 
 ---
 
 ## Contributing
 
 We welcome contributions to improve the TaskMate project! Feel free to fork the repository and submit a pull request. Please ensure that your code follows our guidelines and is properly documented.
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
